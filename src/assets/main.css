@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Comic+Relief&display=swap");
+
+@theme {
+	--font-comic: "Comic Relief", sans-serif;
+}
