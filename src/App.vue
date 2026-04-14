@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-
+	import { RouterView } from "vue-router";
 </script>
 
 <template>
-  <div class="bg-red-500 text-2xl">Hello</div>
-  <RouterView />
+	<div class="min-h-screen flex flex-col">
+		<RouterView />
+	</div>
 </template>
-
-<style scoped>
-</style>
