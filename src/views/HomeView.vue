@@ -9,16 +9,22 @@
 		</p>
 
 		<input
-            v-model="username"
-            @blur = "saveUsername"
-            @keyup.enter="saveUsername"
+			v-model="username"
+			@blur="saveUsername"
+			@keyup.enter="saveUsername"
 			type="text"
 			placeholder="Pick a name"
 			class="bg-white w-full p-4 pl-5 mb-24 text-btn-text text-xl placeholder:text-btn-text/50 focus:outline-none focus:ring-2 focus:ring-btn-bg transition-colors duration-200 caret-btn-bg"
 		/>
 		<div class="flex flex-col gap-y-12 w-full">
-			<BaseButton @click="router.push({name: 'lobby', params: {mode: 'single'}})">Single Player</BaseButton>
-			<BaseButton @click="router.push({name: 'lobby', params: {mode: 'multi'}})">Multiplayer</BaseButton>
+			<BaseButton
+				@click="router.push({ name: 'lobby', params: { mode: 'single' } })"
+				>Single Player</BaseButton
+			>
+			<BaseButton
+				@click="router.push({ name: 'lobby', params: { mode: 'multi' } })"
+				>Multiplayer</BaseButton
+			>
 		</div>
 
 		<BaseModal></BaseModal>
@@ -26,24 +32,27 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, onMounted } from "vue";
-    import {useRouter} from "vue-router"
+	import { onMounted, computed } from "vue";
+	import { useGameStore } from "@/stores/gameStore";
+	import { useRouter } from "vue-router";
 	import BaseButton from "../components/ui/BaseButton.vue";
 	import BaseModal from "../components/ui/BaseModal.vue";
 
-	const username = ref<string>("")
-    const saveUsername = () => {
-        if(username.value.trim()) {
-            localStorage.setItem("username", username.value.trim())
-        }
-    }
+	const router = useRouter();
+	const store = useGameStore();
 
-    const router = useRouter()
+	const username = computed({
+		get: () => store.username,
+		set: (val: string) => (store.username = val),
+	});
+	const saveUsername = () => {
+		if (username.value.trim()) {
+			localStorage.setItem("username", username.value.trim());
+		}
+	};
 
-
-    onMounted(() => {
-        const storedUsername = localStorage.getItem("username")
-        console.log(storedUsername)
-        if(storedUsername) username.value = storedUsername
-    })
+	onMounted(() => {
+        store.initializeProfile()
+        console.log(store.username)
+    });
 </script>

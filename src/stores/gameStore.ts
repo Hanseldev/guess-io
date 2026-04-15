@@ -22,13 +22,21 @@ interface GameState {
 export const useGameStore = defineStore("game", {
     state: (): GameState => ({
         username: '',
-        difficulty: 'easy',
+        difficulty: '' as Difficulty,
         gameId: '',
-        guesses: [],
+        guesses: [] as GuessResult[],
         currentGuess: '',
-        opponents: [],
+        opponents: [] as Player[],
         isWinner: false,
         isGameOver: false
     }),
-    
+    actions: {
+        initializeProfile() {
+            const storedUsername = localStorage.getItem("username");
+            if (storedUsername) {
+                this.username = storedUsername;
+            }
+
+        }
+    }
 });
