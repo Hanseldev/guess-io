@@ -14,11 +14,11 @@
             @keyup.enter="saveUsername"
 			type="text"
 			placeholder="Pick a name"
-			class="bg-white w-full p-4 mb-24 text-btn-text text-xl placeholder:text-btn-text/50 focus:outline-none focus:ring-2 focus:ring-btn-bg transition-colors duration-200 caret-btn-bg"
+			class="bg-white w-full p-4 pl-5 mb-24 text-btn-text text-xl placeholder:text-btn-text/50 focus:outline-none focus:ring-2 focus:ring-btn-bg transition-colors duration-200 caret-btn-bg"
 		/>
 		<div class="flex flex-col gap-y-12 w-full">
-			<BaseButton>Single Player</BaseButton>
-			<BaseButton>Multiplayer</BaseButton>
+			<BaseButton @click="router.push({name: 'lobby', params: {mode: 'single'}})">Single Player</BaseButton>
+			<BaseButton @click="router.push({name: 'lobby', params: {mode: 'multi'}})">Multiplayer</BaseButton>
 		</div>
 
 		<BaseModal></BaseModal>
@@ -27,6 +27,7 @@
 
 <script setup lang="ts">
 	import { ref, onMounted } from "vue";
+    import {useRouter} from "vue-router"
 	import BaseButton from "../components/ui/BaseButton.vue";
 	import BaseModal from "../components/ui/BaseModal.vue";
 
@@ -36,6 +37,9 @@
             localStorage.setItem("username", username.value.trim())
         }
     }
+
+    const router = useRouter()
+
 
     onMounted(() => {
         const storedUsername = localStorage.getItem("username")

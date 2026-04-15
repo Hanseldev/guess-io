@@ -1,9 +1,20 @@
 <script setup lang="ts">
 	import { RouterView } from "vue-router";
+	import bg from "./assets/images/lobby-bg.png";
+
+	const bgStyle = {
+		backgroundImage: `url(${bg})`,
+		backgroundSize: "contain",
+		backgroundRepeat: "repeat",
+		backgroundPosition: "center",
+		opacity: 1,
+	};
 </script>
 
 <template>
-	<div class="min-h-screen flex flex-col">
+	<div class="relative min-h-screen flex flex-col">
+		<!-- <div class="absolute inset-0 -z-10" :style="bgStyle"></div>
+    <div class="absolute inset-0 -z-10 bg-black/15"></div> -->
 		<RouterView />
 	</div>
 </template>
