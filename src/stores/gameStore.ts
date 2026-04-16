@@ -17,6 +17,9 @@ interface GameState {
     isWinner: boolean
     isGameOver: boolean
 
+    guessLength: number | null,
+    guessAttempts: number | null
+
 }
 
 export const useGameStore = defineStore("game", {
@@ -28,7 +31,9 @@ export const useGameStore = defineStore("game", {
         currentGuess: '',
         opponents: [] as Player[],
         isWinner: false,
-        isGameOver: false
+        isGameOver: false,
+        guessLength: null,
+        guessAttempts: null
     }),
     actions: {
         initializeProfile() {

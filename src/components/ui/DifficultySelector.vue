@@ -50,7 +50,7 @@
 			Hard
 		</label>
 	</div>
-	<p class="text-white text-xs">{{ message }}</p>
+	<p class="text-white text-xs mb-8">{{ message }}</p>
 </template>
 
 <script setup lang="ts">

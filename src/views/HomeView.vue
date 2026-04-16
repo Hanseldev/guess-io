@@ -1,4 +1,6 @@
 <template>
+    
+
 	<div class="flex flex-col px-8 items-center my-auto">
 		<h1 class="text-text-main text-6xl select-none">guess.io</h1>
 		<p class="text-text-muted text-4xl mt-4 tracking-widest mb-12 select-none">
