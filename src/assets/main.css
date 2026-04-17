@@ -16,6 +16,11 @@
 	--color-btn-text: #1a2f23;
 	--color-btn-hover: #f4a261;
 
+	/* Status colors */
+	--color-correct: #81B29A;
+	--color-misplaced: #E9C46A;
+	--color-incorrect: #E76F51;
+
 	/* Elevation */
 	--shadow-deep:
 		0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
