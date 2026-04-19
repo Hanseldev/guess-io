@@ -1,5 +1,5 @@
 <template>
-	<div class="w-16 h-16">
+	<div class="w-12 h-12">
 		<input
 			v-if="status === 'empty'"
 			ref="inputRef"
@@ -8,7 +8,7 @@
 			inputmode="numeric"
 			:value="modelValue"
 			:disabled="disabled"
-			class="w-full h-full text-center text-2xl bg-white border-2 border-gray-200 outline-0 transition-all duration-200 ease-in-out disabled:bg-text-muted disabled:border-text-muted disabled:cursor-not-allowed disabled:opacity-50 focus:border-btn-bg focus:shadow-deep"
+			class="w-full h-full text-center text-2xl bg-white border-2 border-gray-200 rounded outline-0 transition-all duration-200 ease-in-out disabled:bg-text-muted disabled:border-text-muted disabled:cursor-not-allowed disabled:opacity-50 focus:border-btn-bg focus:shadow-deep"
 			@input="handleInput"
 			@keydown="handleKeydown"
 		/>

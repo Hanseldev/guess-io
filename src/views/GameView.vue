@@ -1,15 +1,18 @@
 <template>
-    <div>
-        
-    </div>
+	<div  >
+		<GuessGrid class="my-8" />
+	</div>
 </template>
 
 <script setup lang="ts">
-    import GuessRow from "@/components/game/GuessRow.vue";
-    import { useGameStore } from "@/stores/gameStore";
+	import { onMounted } from "vue";
+	import { useGameStore } from "@/stores/gameStore";
+	import GuessGrid from "@/components/game/GuessGrid.vue";
 
-    const store = useGameStore()
+	const store = useGameStore();
 
-    console.log(store.difficulty)
-
+	onMounted(() => {
+		// Initialize with 'easy' mode settings defined in your config
+		store.initializeGame(store.difficulty);
+	});
 </script>

@@ -1,5 +1,5 @@
 <template>
-	<div class="flex">
+	<div class="flex gap-2 mb-2">
 		<NumberTile
 			v-for="i in codeLength"
 			:key="i"
