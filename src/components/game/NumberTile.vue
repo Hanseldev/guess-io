@@ -1,7 +1,7 @@
 <template>
 	<div class="w-16 h-16">
 		<input
-			v-if="status === 'pending'"
+			v-if="status === 'empty'"
 			ref="inputRef"
 			type="text"
 			maxlength="1"
@@ -28,15 +28,14 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, watch } from "vue";
-
-	type TileStatus = "pending" | "correct" | "misplaced" | "incorrect";
+	import type { CellStatus } from "@/types/types";
+import { ref, watch } from "vue";
 
 	interface Props {
 		modelValue: string | number;
 		disabled: boolean;
 		isFocused: boolean;
-		status: TileStatus;
+		status: CellStatus;
 	}
 
 	const props = defineProps<Props>();
@@ -78,7 +77,7 @@
 	watch(
 		() => props.isFocused,
 		(shouldFocus) => {
-			if (shouldFocus && props.status === "pending" && inputRef.value) {
+			if (shouldFocus && props.status === "empty" && inputRef.value) {
 				inputRef.value.focus();
 			}
 		},

@@ -1,5 +1,5 @@
 export type Difficulty = 'easy' | 'medium' | 'hard' | ''
-export type CellStatus = 'correct' | 'present' | 'absent' | 'empty'
+export type CellStatus = 'correct' | 'misplaced' | 'incorrect' | 'empty'
 
 export interface Player {
     id: string,

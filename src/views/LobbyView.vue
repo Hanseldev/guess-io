@@ -3,7 +3,7 @@
 		<DifficultySelector />
 		<BaseButton
 			v-if="isMultiplayer"
-			@click="$router.push('/lobby/multi/waiting')"
+			@click="$router.push({name: 'game', params: {mode: 'multi'}})"
 			>Create Lobby</BaseButton
 		>
 		<BaseButton v-else @click="$router.push('/lobby/single')"
