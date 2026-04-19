@@ -8,6 +8,6 @@ export interface Player {
 }
 
 export interface GuessResult {
-    guess: string,
+    guess: (string | number)[],
     result: CellStatus[]
 } 
