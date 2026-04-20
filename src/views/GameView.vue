@@ -12,7 +12,7 @@
 	const store = useGameStore();
 
 	onMounted(() => {
-		// Initialize with 'easy' mode settings defined in your config
-		store.initializeGame(store.difficulty);
+		
+		// store.initializeGame(store.difficulty);
 	});
 </script>

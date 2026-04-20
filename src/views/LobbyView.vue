@@ -6,7 +6,7 @@
 			@click="$router.push({name: 'game', params: {mode: 'multi'}})"
 			>Create Lobby</BaseButton
 		>
-		<BaseButton v-else @click="$router.push('/lobby/single')"
+		<BaseButton v-else @click="$router.push({name: 'game', params: {mode: 'single'}})"
 			>Start Game</BaseButton
 		>
 	</div>
