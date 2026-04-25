@@ -1,5 +1,9 @@
 <template>
-	<div  >
+	<div>
+		<p class="text-white text-right mr-8 mt-8">
+			Guesses Left:
+			{{ remainingGuesses }}
+		</p>
 		<GuessGrid class="my-8" />
 	</div>
 </template>
@@ -11,8 +15,11 @@
 
 	const store = useGameStore();
 
+	const remainingGuesses = Math.abs(
+		store.currentAttemptIndex - store.guessAttempts,
+	);
+
 	onMounted(() => {
-		
-		// store.initializeGame(store.difficulty);
+		store.initializeGame(store.difficulty);
 	});
 </script>
