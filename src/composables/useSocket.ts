@@ -10,7 +10,7 @@ export const useSocket = () => {
 
     const emit = (event: string, payload: any) => socket.emit(event, payload)
     const on = (event: string, callback: (data: any) => void) => socket.on(event, callback) 
-    const off = (event: string, callback: (data: any) => void) => socket.off(event, callback)
+    const off = (event: string, callback?: (data: any) => void) => socket.off(event, callback)
 
     return {
         connect,
