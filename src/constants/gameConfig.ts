@@ -12,11 +12,11 @@ export const GAME_MODES: Record<Difficulty, ModeSettings> = {
     },
     medium: {
         codeLength: 5,
-        maxAttempts: 8,
+        maxAttempts: 12,
     },
     hard: {
         codeLength: 6,
-        maxAttempts: 6,
+        maxAttempts: 15,
     },
     '': {
         codeLength: 0,

@@ -1,5 +1,5 @@
 export type Difficulty = "easy" | "medium" | "hard" | "";
-export type CellStatus = "correct" | "misplaced" | "incorrect" | "empty";
+export type CellStatus = "correct" | "present" | "absent" | "empty";
 
 export interface Player {
 	id: string;
@@ -14,6 +14,7 @@ export interface GuessResult {
 
 export interface MatchFoundPayload {
 	roomId: string;
+    digit: number;
 	players: string[];
 	difficulty: Difficulty;
 }
@@ -21,11 +22,13 @@ export interface MatchFoundPayload {
 export interface GuessResultPayload {
 	guess: string;
 	result: CellStatus[];
+    correctPosition: number;
+    correctDigit: number;
 }
 
 export interface GameOverPayload {
-	message: string;
-	winner: string;
+	secret: string;
+	winner: string | null;
 }
 
 export interface ErrorPayload {

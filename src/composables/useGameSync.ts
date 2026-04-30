@@ -19,9 +19,15 @@ export const useGameSync = () => {
 			store.handleMatchFound(payload);
 		});
 
+		// when user guesses
 		socket.on("guess_result", (payload: GuessResultPayload) => {
 			console.log("Guess result received", payload);
 			store.handleGuessResult(payload);
+		});
+
+		// when opponents guess
+		socket.on("guess_made", (payload: { username: string; guess: string }) => {
+			store.handleOpponentGuess(payload);
 		});
 
 		socket.on("game_over", (payload: GameOverPayload) => {
@@ -35,7 +41,6 @@ export const useGameSync = () => {
 		});
 	};
 
-	
 	const removeListeners = () => {
 		socket.off("match_found");
 		socket.off("guess_result");
