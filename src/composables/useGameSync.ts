@@ -1,6 +1,5 @@
 import { useSocket } from "./useSocket";
 import { useGameStore } from "@/stores/gameStore";
-// Import your types to fix the 'payload' squiggles
 import type {
 	MatchFoundPayload,
 	GuessResultPayload,
@@ -13,19 +12,20 @@ export const useGameSync = () => {
 	const store = useGameStore();
 
 	const initListeners = () => {
-		// Match found, join game
+		if (socket.areListenersInitialized()) return; // ✅ don't double-register
+		socket.markListenersInitialized();
+		// ✅ Removed socket.socket.onAny — that was socket.io only
+
 		socket.on("match_found", (payload: MatchFoundPayload) => {
-			console.log("Match found:", payload);
+			console.log("🎮 Match found:", payload);
 			store.handleMatchFound(payload);
 		});
 
-		// when user guesses
 		socket.on("guess_result", (payload: GuessResultPayload) => {
 			console.log("Guess result received", payload);
 			store.handleGuessResult(payload);
 		});
 
-		// when opponents guess
 		socket.on("guess_made", (payload: { username: string; guess: string }) => {
 			store.handleOpponentGuess(payload);
 		});

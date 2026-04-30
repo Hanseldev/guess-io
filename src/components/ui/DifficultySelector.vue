@@ -55,27 +55,31 @@
 
 <script setup lang="ts">
 	import { computed } from "vue";
-    import { useGameStore } from "@/stores/gameStore";
-    import type { Difficulty } from "../../types/types";
 
-    const store = useGameStore()
+	// ✅ Proper v-model component — no store dependency
+	const props = defineProps<{
+		modelValue: "easy" | "medium" | "hard" | "";
+	}>();
+
+	const emit = defineEmits<{
+		"update:modelValue": ["easy" | "medium" | "hard" | ""];
+	}>();
 
 	const selected = computed({
-        get: () => store.difficulty,
-        set: (val: Difficulty) => store.difficulty = val
-    })
-	
+		get: () => props.modelValue,
+		set: (val) => emit("update:modelValue", val),
+	});
 
 	const message = computed(() => {
 		switch (selected.value) {
 			case "easy":
 				return "4 digits, 10 tries";
 			case "medium":
-				return "5 digits, 8 tries";
+				return "5 digits, 12 tries"; // ✅ corrected from docs
 			case "hard":
-				return "6 digits, 6 tries";
-            default:
-                return ''
+				return "6 digits, 15 tries"; // ✅ corrected from docs
+			default:
+				return "";
 		}
 	});
 </script>

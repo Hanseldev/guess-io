@@ -1,7 +1,8 @@
 <template>
-	<div class="flex flex-col items-center max-h-96 overflow-scroll overscroll-auto gap-2">
+	<div
+		class="flex flex-col items-center max-h-96 overflow-scroll overscroll-auto gap-2"
+	>
 		<GuessRow
-            
 			v-for="i in guessAttempts"
 			:key="i"
 			:code-length="guessLength"
@@ -9,7 +10,7 @@
 			:status="getRowStatus(i - 1)"
 			:disabled="!isRowActive(i - 1)"
 			@update:guess="store.setCurrentGuess"
-			@submit="store.submitGuess"
+			@submit="(guess) => store.submitGuess(guess)"
 		/>
 	</div>
 </template>
@@ -18,6 +19,7 @@
 	import { storeToRefs } from "pinia";
 	import { useGameStore } from "@/stores/gameStore";
 	import GuessRow from "./GuessRow.vue";
+	import type { CellStatus } from "@/types/types";
 
 	const store = useGameStore();
 
@@ -36,17 +38,19 @@
 		if (index === currentAttemptIndex.value) return currentGuess.value;
 
 		// If this is a past row, pull the guess from the history object
-		if (index < currentAttemptIndex.value) return guesses.value[index]?.guess ?? Array(guessLength.value).fill("");
+		if (index < currentAttemptIndex.value)
+			return guesses.value[index]?.guess ?? Array(guessLength.value).fill("");
 
 		// Future rows are empty
 		return Array(guessLength.value).fill("");
 	};
 
 	// 2. Status Logic (for colors)
-	const getRowStatus = (index: number) => {
-		// Logic: past rows show their saved status; active/future are 'pending'
-		if (index < currentAttemptIndex.value) return "incorrect"; // Placeholder for actual result logic
-		return "empty";
+	const getRowStatus = (index: number): CellStatus[] | null => {
+		if (index < currentAttemptIndex.value) {
+			return guesses.value[index]?.result ?? null;
+		}
+		return null;
 	};
 
 	// 3. Gatekeeper Logic

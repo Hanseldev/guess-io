@@ -5,7 +5,7 @@
 			:key="i"
 			:modelValue="guess[i - 1] ?? ''"
 			:isFocused="activeTileIndex === i - 1"
-			:status="status"
+			:status="props.status ? (props.status[i - 1] ?? 'empty') : 'empty'"
             :disabled="disabled"
             @update:model-value="(val) => handleUpdate(i - 1, val)"
             @next="handleNext(i - 1)"
@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-	import { ref } from "vue";
+	import { nextTick, ref } from "vue";
 	import NumberTile from "./NumberTile.vue";
 	import type { CellStatus } from "@/types/types";
 
@@ -25,13 +25,13 @@
 	const props = defineProps<{
 		codeLength: number;
 		guess: (number | string)[];
-		status: CellStatus;
+		status: CellStatus[] | null;
 		disabled?: boolean;
 	}>();
 
     const emit = defineEmits<{
         "update:guess": [newGuess: (string | number)[]]
-        submit: []
+        submit: [guess: (string | number)[]]
     }>()
 
     const handleUpdate = (index: number, value: string | number) => {
@@ -44,7 +44,8 @@
         if (index < props.codeLength - 1) {
             activeTileIndex.value = index + 1
         } else {
-            emit("submit")
+            console.log("🎯 Last tile filled, submitting...", props.guess);
+            nextTick(() => emit('submit', [...props.guess]))
         }
     }
 

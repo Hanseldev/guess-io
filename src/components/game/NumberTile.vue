@@ -18,8 +18,8 @@
 			class="w-full h-full flex items-center justify-center text-2xl font-bold rounded transition-all duration-500"
 			:class="{
 				'bg-correct text-white border-correct': status === 'correct',
-				'bg-misplaced text-white border-misplaced': status === 'misplaced',
-				'bg-incorrect text-white border-incorrect': status === 'incorrect',
+				'bg-misplaced text-white border-misplaced': status === 'present',
+				'bg-incorrect text-white border-incorrect': status === 'absent',
 			}"
 		>
 			{{ modelValue }}

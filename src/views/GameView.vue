@@ -9,17 +9,14 @@
 </template>
 
 <script setup lang="ts">
-	import { onMounted } from "vue";
+	import { onMounted, computed } from "vue";
 	import { useGameStore } from "@/stores/gameStore";
 	import GuessGrid from "@/components/game/GuessGrid.vue";
 
 	const store = useGameStore();
 
-	const remainingGuesses = Math.abs(
-		store.currentAttemptIndex - store.guessAttempts,
+	const remainingGuesses = computed(() =>
+		Math.abs(store.currentAttemptIndex - store.guessAttempts),
 	);
 
-	onMounted(() => {
-		store.initializeGame(store.difficulty);
-	});
 </script>
