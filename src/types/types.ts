@@ -16,7 +16,7 @@ export interface MatchFoundPayload {
 	roomId: string;
 	digit: number;
 	tries: number;
-	players: string[];
+	players: {id: string; username: string}[];
 }
 
 export interface GuessResultPayload {

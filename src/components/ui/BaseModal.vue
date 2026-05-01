@@ -8,13 +8,13 @@
 
 		<div class="bg-btn-bg mx-8 p-8 rounded-lg relative gap-y-4 ">
             <button @click="isOpen = !isOpen" class="absolute -top-3 -right-2 select-none cursor-pointer p-6">x</button>
-            Guess.io is an interactive game that can be played with friends. Players attempt to guess a number before they run out of tries.
+            <slot></slot>
         </div>
 	</div>
 </template>
 
 <script setup lang="ts">
-	import { ref, onMounted } from "vue";
+	import { ref } from "vue";
 
 	const isOpen = ref(true);
 	const close = () => (isOpen.value = false);

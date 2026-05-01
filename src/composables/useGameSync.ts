@@ -27,6 +27,11 @@ export const useGameSync = () => {
 		});
 
 		socket.on("guess_made", (payload: { username: string; guess: string }) => {
+			console.log("👥 Opponent guess received:", payload);
+			console.log(
+				"👥 Known opponents:",
+				JSON.stringify(store.opponents.map((o) => o.name)),
+			);
 			store.handleOpponentGuess(payload);
 		});
 
@@ -37,6 +42,10 @@ export const useGameSync = () => {
 
 		socket.on("error", (payload: ErrorPayload) => {
 			console.error("Socket Error:", payload.message);
+			const message =
+				typeof payload === "string"
+					? payload
+					: (payload?.message ?? "Unknown error");
 			store.setError(payload.message);
 		});
 	};

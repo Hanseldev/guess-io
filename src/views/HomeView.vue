@@ -20,7 +20,9 @@
 			<BaseButton @click="router.push({ name: 'lobby' })">Play</BaseButton>
 		</div>
 
-		<BaseModal></BaseModal>
+		<BaseModal>
+			Guess.io is an interactive game that can be played with friends. Players attempt to guess a number before they run out of tries.
+		</BaseModal>
 	</div>
 </template>
 
