@@ -19,6 +19,7 @@ interface GameState {
 	guesses: GuessResult[];
 	currentGuess: (string | number)[];
 	currentAttemptIndex: number;
+	totalGuesses: number;
 
 	// Status
 	isWinner: boolean;
@@ -51,6 +52,7 @@ export const useGameStore = defineStore("game", {
 
 		guessLength: 0,
 		guessAttempts: 0,
+		totalGuesses: 0,
 	}),
 
 	actions: {
@@ -67,6 +69,7 @@ export const useGameStore = defineStore("game", {
 
 		resetGame() {
 			this.guesses = [];
+			this.totalGuesses = 0;
 			this.currentGuess = Array(this.guessLength).fill("");
 			this.currentAttemptIndex = 0;
 			this.isGameOver = false;
@@ -85,7 +88,7 @@ export const useGameStore = defineStore("game", {
 
 			const { emit } = useSocket();
 			emit("play", { username: this.username, mode });
-			console.log(`🎮 Joined queue (${mode}) as ${this.username}`);
+			console.log(`Joined queue (${mode}) as ${this.username}`);
 		},
 
 		submitGuess(guess: (string | number)[]) {
@@ -104,24 +107,21 @@ export const useGameStore = defineStore("game", {
 
 			const { emit } = useSocket();
 			emit("guess", { guess: guessString });
-			console.log("📤 Emitted guess to server:", guessString);
-
-			// ✅ Removed: currentAttemptIndex++ and currentGuess reset
-			// These now happen in handleGuessResult when server confirms
+			console.log("Emitted guess to server:", guessString);
 		},
 
 		handleGuessResult(payload: GuessResultPayload) {
-			this.guesses.push({
-				guess: payload.guess.split(""),
-				result: payload.result,
-			});
-
-			// ✅ Move index advancement here — only on server confirmation
+			this.totalGuesses++;
 			this.currentAttemptIndex++;
 			this.currentGuess = Array(this.guessLength).fill("");
 
-			const isAllCorrect = payload.result.every((s) => s === "correct");
+			this.guesses.push({
+				guess: payload.guess.split(""),
+				result: payload.result,
+				isOwn: true, // your guess
+			});
 
+			const isAllCorrect = payload.result.every((s) => s === "correct");
 			if (isAllCorrect) {
 				this.isWinner = true;
 				this.isGameOver = true;
@@ -141,15 +141,15 @@ export const useGameStore = defineStore("game", {
 			this.currentAttemptIndex = 0;
 
 			this.opponents = payload.players
-				.filter((p) => p.username !== this.username) // ✅ filter by username
+				.filter((p) => p.username !== this.username) // filter by username
 				.map((p) => ({
 					id: p.id,
-					name: p.username, // ✅ store username as name
+					name: p.username, // store username as name
 					progress: [],
 				}));
 
 			this.opponents.forEach((opponent) => {
-				this.opponentLastGuesses[opponent.name] = []; // ✅ keyed by username string
+				this.opponentLastGuesses[opponent.name] = []; // keyed by username string
 			});
 
 			this.isActive = true;
@@ -158,8 +158,15 @@ export const useGameStore = defineStore("game", {
 		},
 
 		handleOpponentGuess(payload: { username?: string; guess: string }) {
-			// Server doesn't send username in guess_made, so update all opponents
-			// In easy mode this is always one person; in medium/hard update all
+			this.totalGuesses++;
+			this.currentAttemptIndex++;
+
+			this.guesses.push({
+				guess: payload.guess.split(""),
+				result: null, // no color data
+				isOwn: false, // opponent guess
+			});
+			
 			this.opponents.forEach((opponent) => {
 				const current = this.opponentLastGuesses[opponent.name] ?? [];
 				this.opponentLastGuesses = {
@@ -168,8 +175,12 @@ export const useGameStore = defineStore("game", {
 				};
 				opponent.progress = [...opponent.progress, "empty"];
 			});
+			console.log(
+				"opponentLastGuesses after:",
+				JSON.stringify(this.opponentLastGuesses),
+			);
 		},
-		
+
 		handleGameOver(payload: GameOverPayload) {
 			this.isActive = false;
 			this.isGameOver = true;

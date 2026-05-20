@@ -1,7 +1,8 @@
 <template>
 	<div class="w-12 h-12">
+		<!-- Active input tile -->
 		<input
-			v-if="status === 'empty'"
+			v-if="!disabled && isOwn"
 			ref="inputRef"
 			type="text"
 			maxlength="1"
@@ -13,29 +14,43 @@
 			@keydown="handleKeydown"
 		/>
 
+		<!-- Your past guess tile (colored) -->
 		<div
-			v-else
+			v-else-if="isOwn && status !== 'empty'"
 			class="w-full h-full flex items-center justify-center text-2xl font-bold rounded transition-all duration-500"
 			:class="{
-				'bg-correct text-white border-correct': status === 'correct',
-				'bg-misplaced text-white border-misplaced': status === 'present',
-				'bg-incorrect text-white border-incorrect': status === 'absent',
+				'bg-correct text-white': status === 'correct',
+				'bg-misplaced text-white': status === 'present',
+				'bg-incorrect text-white': status === 'absent',
+				// 'bg-gray-300 text-gray-600': status === 'empty',
 			}"
 		>
 			{{ modelValue }}
 		</div>
+
+		<!-- Opponent guess tile (neutral, digits only) -->
+		<div
+			v-else-if="!isOwn"
+			class="w-full h-full flex items-center justify-center text-2xl font-bold rounded bg-white/20 text-white/60"
+		>
+			{{ modelValue }}
+		</div>
+
+		<!-- Empty placeholder -->
+		<div v-else class="w-full h-full border-2 border-gray-200/20 rounded" />
 	</div>
 </template>
 
 <script setup lang="ts">
 	import type { CellStatus } from "@/types/types";
-import { ref, watch } from "vue";
+	import { ref, watch } from "vue";
 
 	interface Props {
 		modelValue: string | number;
 		disabled: boolean;
 		isFocused: boolean;
 		status: CellStatus;
+		isOwn?: boolean;
 	}
 
 	const props = defineProps<Props>();

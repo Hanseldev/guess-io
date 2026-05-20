@@ -12,12 +12,11 @@ export const useGameSync = () => {
 	const store = useGameStore();
 
 	const initListeners = () => {
-		if (socket.areListenersInitialized()) return; // ✅ don't double-register
+		if (socket.areListenersInitialized()) return; // don't double-register
 		socket.markListenersInitialized();
-		// ✅ Removed socket.socket.onAny — that was socket.io only
 
 		socket.on("match_found", (payload: MatchFoundPayload) => {
-			console.log("🎮 Match found:", payload);
+			console.log("Match found:", payload);
 			store.handleMatchFound(payload);
 		});
 
@@ -27,9 +26,9 @@ export const useGameSync = () => {
 		});
 
 		socket.on("guess_made", (payload: { username: string; guess: string }) => {
-			console.log("👥 Opponent guess received:", payload);
+			console.log("Opponent guess received:", payload);
 			console.log(
-				"👥 Known opponents:",
+				"Known opponents:",
 				JSON.stringify(store.opponents.map((o) => o.name)),
 			);
 			store.handleOpponentGuess(payload);

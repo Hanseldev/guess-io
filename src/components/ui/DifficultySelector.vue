@@ -56,7 +56,6 @@
 <script setup lang="ts">
 	import { computed } from "vue";
 
-	// ✅ Proper v-model component — no store dependency
 	const props = defineProps<{
 		modelValue: "easy" | "medium" | "hard" | "";
 	}>();
@@ -75,9 +74,9 @@
 			case "easy":
 				return "4 digits, 10 tries";
 			case "medium":
-				return "5 digits, 12 tries"; // ✅ corrected from docs
+				return "5 digits, 12 tries"; 
 			case "hard":
-				return "6 digits, 15 tries"; // ✅ corrected from docs
+				return "6 digits, 15 tries"; 
 			default:
 				return "";
 		}

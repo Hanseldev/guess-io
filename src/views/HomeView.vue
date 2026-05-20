@@ -8,26 +8,28 @@
 			<span class="inline-block rotate-[-12.48deg]">8</span>
 		</p>
 
-		<input
-			v-model="username"
-			@blur="saveUsername"
-			@keyup.enter="saveUsername"
-			type="text"
-			placeholder="Pick a name"
-			class="bg-white w-full p-4 pl-5 mb-24 text-btn-text text-xl placeholder:text-btn-text/50 focus:outline-none focus:ring-2 focus:ring-btn-bg transition-colors duration-200 caret-btn-bg"
-		/>
-		<div class="flex flex-col gap-y-12 w-full">
-			<BaseButton @click="router.push({ name: 'lobby' })">Play</BaseButton>
-		</div>
+		<div>
+			<input
+				v-model="username"
+				@blur="saveUsername"
+				@keyup.enter="saveUsername"
+				type="text"
+				placeholder="Pick a name"
+				class="bg-white w-full p-4 pl-5 mb-18 text-btn-text text-xl placeholder:text-btn-text/50 focus:outline-none focus:ring-2 focus:ring-btn-bg transition-colors duration-200 caret-btn-bg"
+			/>
 
-		<BaseModal>
-			Guess.io is an interactive game that can be played with friends. Players attempt to guess a number before they run out of tries.
+			<BaseButton @click="router.push({ name: 'lobby' })" class="w-full">Play</BaseButton>
+		</div>
+		<BaseModal v-model="showIntro" :closeable="true">
+			Guess.io is a multiplayer number guessing game. Race your opponents to
+			crack the secret code before you run out of tries. No repeated digits
+			allowed!
 		</BaseModal>
 	</div>
 </template>
 
 <script setup lang="ts">
-	import { onMounted, computed } from "vue";
+	import { onMounted, computed, ref } from "vue";
 	import { useGameStore } from "@/stores/gameStore";
 	import { useRouter } from "vue-router";
 	import BaseButton from "../components/ui/BaseButton.vue";
@@ -35,6 +37,8 @@
 
 	const router = useRouter();
 	const store = useGameStore();
+
+	const showIntro = ref(false);
 
 	const username = computed({
 		get: () => store.username,
@@ -48,6 +52,9 @@
 
 	onMounted(() => {
 		store.initializeProfile();
-		console.log(store.username);
+		if (!localStorage.getItem("hasVisited")) {
+			showIntro.value = true;
+			localStorage.setItem("hasVisited", "true");
+		}
 	});
 </script>

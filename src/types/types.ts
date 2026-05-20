@@ -8,7 +8,8 @@ export interface Player {
 
 export interface GuessResult {
 	guess: (string | number)[];
-	result: CellStatus[];
+	result: CellStatus[] | null;
+	isOwn: boolean
 }
 
 export interface MatchFoundPayload {

@@ -1,7 +1,7 @@
 <template>
-	<div class="flex flex-col p-8">
+	<div class="flex flex-col p-8 md:w-fit md:self-center">
 		<DifficultySelector v-model="selectedDifficulty" />
-		<BaseButton @click="createLobby">Create Lobby</BaseButton>
+		<BaseButton @click="createLobby" class=" w-full">Create Lobby</BaseButton>
 	</div>
 </template>
 
