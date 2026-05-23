@@ -20,7 +20,7 @@
 <script setup lang="ts">
 	const props = defineProps<{
 		modelValue: boolean;
-		closeable?: boolean; // ✅ game over modal won't have a close button
+		closeable?: boolean; // game over modal won't have a close button
 	}>();
 
 	const emit = defineEmits<{

@@ -1,6 +1,6 @@
 <template>
     <header class="flex justify-between pt-4 px-8">
-        <BackButton v-if="!isHome" />
+        <BackButton v-if="!isHome && !isGame" />
         <h1 class="text-text-muted text-xl select-none">guess.io</h1>
     </header>
 </template>
@@ -13,4 +13,5 @@
     const route = useRoute();
 
     const isHome = computed(() => route.name === "home");
+    const isGame = computed(() => route.name === "game")
 </script>

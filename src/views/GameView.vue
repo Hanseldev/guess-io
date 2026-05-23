@@ -88,8 +88,7 @@
 						<p v-else class="text-text-muted text-xs italic">No guess yet</p>
 					</div>
 					<p class="text-text-muted text-xs">
-						{{ opponentGuessCount(opponent.name) }} /
-						{{ store.guessAttempts }} guesses
+						{{ opponentGuessCount(opponent.name) }} guesses
 					</p>
 				</div>
 			</div>
