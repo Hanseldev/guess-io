@@ -1,6 +1,5 @@
 <template>
-	<div class="w-12 h-12">
-		<!-- Active input tile -->
+	<div class="w-12 h-12" style="perspective: 250px">
 		<input
 			v-if="!disabled && isOwn"
 			ref="inputRef"
@@ -9,26 +8,29 @@
 			inputmode="numeric"
 			:value="modelValue"
 			:disabled="disabled"
-			class="w-full h-full text-center text-2xl bg-white border-2 border-gray-200 rounded outline-0 transition-all duration-200 ease-in-out disabled:bg-text-muted disabled:border-text-muted disabled:cursor-not-allowed disabled:opacity-50 focus:border-btn-bg focus:shadow-deep"
+			:class="[
+				'w-full h-full text-center text-2xl bg-white border-2 border-gray-200 rounded outline-0 transition-all duration-200 ease-in-out focus:border-btn-bg focus:shadow-deep focus:scale-105 focus:ring-2 focus:ring-btn-bg/50',
+				popClass,
+			]"
 			@input="handleInput"
 			@keydown="handleKeydown"
 		/>
 
-		<!-- Your past guess tile (colored) -->
 		<div
 			v-else-if="isOwn && status !== 'empty'"
-			class="w-full h-full flex items-center justify-center text-2xl font-bold rounded transition-all duration-500"
-			:class="{
-				'bg-correct text-white': status === 'correct',
-				'bg-misplaced text-white': status === 'present',
-				'bg-incorrect text-white': status === 'absent',
-				// 'bg-gray-300 text-gray-600': status === 'empty',
-			}"
+			:class="[
+				'w-full h-full flex items-center justify-center text-2xl font-bold rounded transition-all duration-500',
+				flipClass,
+				{
+					'bg-correct text-white': status === 'correct',
+					'bg-misplaced text-white': status === 'present',
+					'bg-incorrect text-white': status === 'absent',
+				},
+			]"
 		>
 			{{ modelValue }}
 		</div>
 
-		<!-- Opponent guess tile (neutral, digits only) -->
 		<div
 			v-else-if="!isOwn"
 			class="w-full h-full flex items-center justify-center text-2xl font-bold rounded bg-white/20 text-white/60"
@@ -36,14 +38,13 @@
 			{{ modelValue }}
 		</div>
 
-		<!-- Empty placeholder -->
 		<div v-else class="w-full h-full border-2 border-gray-200/20 rounded" />
 	</div>
 </template>
 
 <script setup lang="ts">
 	import type { CellStatus } from "@/types/types";
-	import { ref, watch } from "vue";
+	import { ref, watch, onMounted } from "vue";
 
 	interface Props {
 		modelValue: string | number;
@@ -62,16 +63,45 @@
 	}>();
 
 	const inputRef = ref<HTMLInputElement | null>(null);
+	const popClass = ref("");
+	const flipClass = ref("");
+
+	onMounted(() => {
+		if (props.isFocused && !props.disabled && inputRef.value) {
+			inputRef.value.focus();
+		}
+
+		// ✅ Flip when tile mounts with a status (i.e. row was just submitted)
+		if (props.status && props.status !== "empty") {
+			flipClass.value = "animate-flip";
+		}
+	});
+
+	watch(
+		() => props.isFocused,
+		(shouldFocus) => {
+			if (shouldFocus && !props.disabled && inputRef.value) {
+				inputRef.value.focus();
+			}
+		},
+	);
+
+	const triggerPop = () => {
+		popClass.value = "";
+		requestAnimationFrame(() => {
+			popClass.value = "animate-pop";
+			setTimeout(() => (popClass.value = ""), 150);
+		});
+	};
 
 	const handleInput = (e: Event) => {
 		const target = e.target as HTMLInputElement;
 		const value = target.value;
-
-		// Ensure only the last character entered is kept (for mobile/accidental double tap)
 		const lastChar = value.slice(-1);
 
 		if (/^\d$/.test(lastChar)) {
 			emit("update:modelValue", Number(lastChar));
+			triggerPop(); // ✅ pop on valid digit
 			emit("next");
 		} else {
 			target.value = "";
@@ -88,14 +118,4 @@
 			}
 		}
 	};
-
-	watch(
-		() => props.isFocused,
-		(shouldFocus) => {
-			if (shouldFocus && props.status === "empty" && inputRef.value) {
-				inputRef.value.focus();
-			}
-		},
-		{ immediate: true },
-	);
 </script>

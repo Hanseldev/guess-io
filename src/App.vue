@@ -6,6 +6,7 @@
 	import { RouterView } from "vue-router";
 	// import bg from "./assets/images/lobby-bg.png";
 	import TheHeader from "./components/ui/TheHeader.vue";
+	import FloatingNumbers from "./components/ui/FloatingNumbers.vue";
 
 	const store = useGameStore();
 	const { initListeners } = useGameSync();
@@ -23,9 +24,12 @@
 
 <template>
 	<div class="relative min-h-screen flex flex-col">
+		<FloatingNumbers />
 		<TheHeader />
-		<!-- <div class="absolute inset-0 -z-10" :style="bgStyle"></div>
-    <div class="absolute inset-0 -z-10 bg-black/15"></div> -->
-		<RouterView />
+		<RouterView v-slot="{ Component }">
+			<Transition name="page" mode="out-in">
+				<component :is="Component" />
+			</Transition>
+		</RouterView>
 	</div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-	<div class="flex gap-2 mb-2">
+	<div :class="['flex gap-2 mb-2', shakeClass]">
 		<NumberTile
 			v-for="i in codeLength"
 			:key="i"
@@ -11,8 +11,7 @@
 			@update:model-value="(val) => handleUpdate(i - 1, val)"
 			@next="handleNext(i - 1)"
 			@back="handleBack(i - 1)"
-		>
-		</NumberTile>
+		/>
 	</div>
 </template>
 
@@ -21,14 +20,13 @@
 	import NumberTile from "./NumberTile.vue";
 	import type { CellStatus } from "@/types/types";
 
-	// Data GuessRow needs. Will be supplied by parent, prop drilling
-
 	const props = defineProps<{
 		codeLength: number;
 		guess: (number | string)[];
 		status: CellStatus[] | null;
 		disabled?: boolean;
 		isOwn?: boolean;
+		shake?: boolean; // ✅ new
 	}>();
 
 	const emit = defineEmits<{
@@ -36,25 +34,20 @@
 		submit: [guess: (string | number)[]];
 	}>();
 
-	const handleUpdate = (index: number, value: string | number) => {
-		const newGuess = [...props.guess];
-		newGuess[index] = value;
-		emit("update:guess", newGuess);
-	};
-
-	const handleNext = (index: number) => {
-		if (index < props.codeLength - 1) {
-			activeTileIndex.value = index + 1;
-		} else {
-			console.log("Last tile filled, submitting...", props.guess);
-			nextTick(() => emit("submit", [...props.guess]));
-		}
-	};
-
-	const handleBack = (index: number) => {
-		if (index > 0) activeTileIndex.value = index - 1;
-	};
 	const activeTileIndex = ref(0);
+	const shakeClass = ref("");
+
+	// ✅ Trigger shake when shake prop flips to true
+	watch(
+		() => props.shake,
+		(val) => {
+			if (val) {
+				shakeClass.value = "animate-shake";
+				setTimeout(() => (shakeClass.value = ""), 400);
+			}
+		},
+	);
+
 	watch(
 		() => props.disabled,
 		(isDisabled) => {
@@ -66,4 +59,22 @@
 		},
 		{ immediate: true },
 	);
+
+	const handleUpdate = (index: number, value: string | number) => {
+		const newGuess = [...props.guess];
+		newGuess[index] = value;
+		emit("update:guess", newGuess);
+	};
+
+	const handleNext = (index: number) => {
+		if (index < props.codeLength - 1) {
+			activeTileIndex.value = index + 1;
+		} else {
+			nextTick(() => emit("submit", [...props.guess]));
+		}
+	};
+
+	const handleBack = (index: number) => {
+		if (index > 0) activeTileIndex.value = index - 1;
+	};
 </script>

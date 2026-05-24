@@ -1,34 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Alata&family=Comic+Relief:wght@400;700&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Outfit:wght@100..900&family=Overpass:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import "./animations.css";
 @import "tailwindcss";
 
 @theme {
-	--font-comic: "Comic Relief", sans-serif;
+	--font-mono: "Space Mono", monospace;
 
-	/* Text & Feedback */
 	--color-text-main: #f1f1f1;
-	--color-text-muted: #a3ad9f;
-	--color-half-right: #e9c46a;
+	--color-text-muted: #9ca3af;
 
-	/* UI Elements */
-    --color-main: #1a2f23;
+	--color-main: #0d1f13;
 	--color-white: #f1f1f1;
-	--color-btn-bg: #E9C46A;
-	--color-btn-text: #1a2f23;
-	--color-btn-hover: #f4a261;
+	--color-btn-bg: #f5c518;
+	--color-btn-text: #0d1f13;
+	--color-btn-hover: #fdd835;
 
-	/* Status colors */
-	--color-correct: #81B29A;
-	--color-misplaced: #E9C46A;
-	--color-incorrect: #E76F51;
+	--color-correct: #00b894;
+	--color-misplaced: #f5c518;
+	--color-incorrect: #e76f51;
 
-	/* Elevation */
 	--shadow-deep:
 		0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 	--shadow-inner-glow: inset 0 2px 4px 0 rgba(255, 255, 255, 0.05);
 }
 
 body {
-	font-family: "Comic Relief", sans-serif;
+	font-family: "Space Mono", monospace;
 	background-color: var(--color-main);
-	
 }
+

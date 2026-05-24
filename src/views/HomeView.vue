@@ -1,7 +1,11 @@
 <template>
 	<div class="flex flex-col px-8 items-center my-auto">
-		<h1 class="text-text-main text-6xl select-none">guess.io</h1>
-		<p class="text-text-muted text-4xl mt-4 tracking-widest mb-12 select-none">
+		<h1 class="text-text-main text-6xl select-none animate-bounce-in">
+			guess.io
+		</h1>
+		<p
+			class="text-text-muted text-4xl mt-4 tracking-widest mb-12 select-none animate-bounce-in-delay"
+		>
 			<span class="inline-block rotate-[11.77deg]">2</span>
 			<span class="inline-block rotate-[-10.25deg]">0</span>
 			<span class="inline-block rotate-[10.71deg]">4</span>
@@ -18,7 +22,9 @@
 				class="bg-white w-full p-4 pl-5 mb-18 text-btn-text text-xl placeholder:text-btn-text/50 focus:outline-none focus:ring-2 focus:ring-btn-bg transition-colors duration-200 caret-btn-bg"
 			/>
 
-			<BaseButton @click="router.push({ name: 'lobby' })" class="w-full">Play</BaseButton>
+			<BaseButton @click="router.push({ name: 'lobby' })" class="w-full"
+				>Play</BaseButton
+			>
 		</div>
 		<BaseModal v-model="showIntro" :closeable="true">
 			Guess.io is a multiplayer number guessing game. Race your opponents to

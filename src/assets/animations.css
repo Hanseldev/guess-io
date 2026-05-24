@@ -1,0 +1,150 @@
+@keyframes float {
+	0% {
+		transform: translateY(0) rotate(0deg);
+	}
+	100% {
+		transform: translateY(-100vh) rotate(20deg);
+		opacity: 0;
+	}
+}
+
+.animate-float {
+	animation: float linear infinite;
+}
+
+@keyframes pop {
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.15);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+.animate-pop {
+	animation: pop 0.1s ease-in-out;
+}
+
+@keyframes shake {
+	0%,
+	100% {
+		transform: translateX(0);
+	}
+	15% {
+		transform: translateX(-6px);
+	}
+	30% {
+		transform: translateX(6px);
+	}
+	45% {
+		transform: translateX(-4px);
+	}
+	60% {
+		transform: translateX(4px);
+	}
+	75% {
+		transform: translateX(-2px);
+	}
+	90% {
+		transform: translateX(2px);
+	}
+}
+
+@keyframes slide-up {
+	0% {
+		transform: translateY(30px);
+		opacity: 0;
+	}
+	100% {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+@keyframes flip {
+	0% {
+		transform: rotateX(0deg);
+	}
+	50% {
+		transform: rotateX(-90deg);
+	}
+	100% {
+		transform: rotateX(0deg);
+	}
+}
+
+@keyframes bounce-in {
+	0% {
+		transform: translateY(-40px);
+		opacity: 0;
+	}
+	60% {
+		transform: translateY(8px);
+		opacity: 1;
+	}
+	80% {
+		transform: translateY(-4px);
+	}
+	100% {
+		transform: translateY(0);
+	}
+}
+
+.animate-bounce-in {
+	animation: bounce-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-bounce-in-delay {
+	animation: bounce-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+}
+
+.animate-slide-up {
+	animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-shake {
+	animation: shake 0.4s ease-in-out;
+}
+
+.backdrop-enter-active {
+	transition: opacity 0.3s ease;
+}
+.backdrop-leave-active {
+	transition: opacity 0.2s ease;
+}
+.backdrop-enter-from,
+.backdrop-leave-to {
+	opacity: 0;
+}
+
+.card-enter-active {
+	transition:
+		transform 2s cubic-bezier(0.16, 1, 0.3, 1),
+		opacity 2s ease;
+}
+.card-enter-from {
+	transform: translateY(100px);
+	opacity: 0;
+}
+.card-enter-to {
+	transform: translateY(0);
+	opacity: 1;
+}
+
+.page-enter-active,
+.page-leave-active {
+	transition:
+		opacity 0.2s ease,
+		transform 0.2s ease;
+}
+.page-enter-from {
+	opacity: 0;
+	transform: translateY(8px);
+}
+.page-leave-to {
+	opacity: 0;
+	transform: translateY(-8px);
+}

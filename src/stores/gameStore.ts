@@ -27,6 +27,7 @@ interface GameState {
 	isActive: boolean;
 	secret: string;
 	error: string | null;
+	shakeActive: boolean;
 
 	// Config (owned by server)
 	guessLength: number;
@@ -49,6 +50,7 @@ export const useGameStore = defineStore("game", {
 		isGameOver: false,
 		isActive: false,
 		error: null,
+		shakeActive: false,
 
 		guessLength: 0,
 		guessAttempts: 0,
@@ -77,6 +79,7 @@ export const useGameStore = defineStore("game", {
 			this.isActive = false;
 			this.secret = "";
 			this.error = null;
+			this.shakeActive = false;
 		},
 
 		joinQueue(mode: "easy" | "medium" | "hard") {
@@ -166,7 +169,7 @@ export const useGameStore = defineStore("game", {
 				result: null, // no color data
 				isOwn: false, // opponent guess
 			});
-			
+
 			this.opponents.forEach((opponent) => {
 				const current = this.opponentLastGuesses[opponent.name] ?? [];
 				this.opponentLastGuesses = {
@@ -190,7 +193,11 @@ export const useGameStore = defineStore("game", {
 
 		setError(message: string) {
 			this.error = message;
-			console.error("Game Error:", message);
+			this.shakeActive = true;
+			setTimeout(() => {
+				this.error = null;
+				this.shakeActive = false;
+			}, 400);
 		},
 	},
 });

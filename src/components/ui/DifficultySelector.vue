@@ -72,11 +72,11 @@
 	const message = computed(() => {
 		switch (selected.value) {
 			case "easy":
-				return "4 digits, 10 tries";
+				return "2 players, 4 digits, 10 tries";
 			case "medium":
-				return "5 digits, 12 tries"; 
+				return "3 players, 5 digits, 12 tries"; 
 			case "hard":
-				return "6 digits, 15 tries"; 
+				return "4 players, 6 digits, 15 tries"; 
 			default:
 				return "";
 		}
