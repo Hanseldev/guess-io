@@ -20,11 +20,13 @@ interface GameState {
 	currentGuess: (string | number)[];
 	currentAttemptIndex: number;
 	totalGuesses: number;
+	currentMode: "easy" | "medium" | "hard" | ""
 
 	// Status
 	isWinner: boolean;
 	isGameOver: boolean;
 	isActive: boolean;
+	isSubmitting: boolean;
 	secret: string;
 	error: string | null;
 	shakeActive: boolean;
@@ -45,10 +47,12 @@ export const useGameStore = defineStore("game", {
 		currentGuess: [],
 		currentAttemptIndex: 0,
 		secret: "",
+		currentMode: "",
 
 		isWinner: false,
 		isGameOver: false,
 		isActive: false,
+		isSubmitting: false,
 		error: null,
 		shakeActive: false,
 
@@ -77,12 +81,14 @@ export const useGameStore = defineStore("game", {
 			this.isGameOver = false;
 			this.isWinner = false;
 			this.isActive = false;
+			this.isSubmitting = false;
 			this.secret = "";
 			this.error = null;
 			this.shakeActive = false;
 		},
 
 		joinQueue(mode: "easy" | "medium" | "hard") {
+			this.currentMode = mode
 			this.resetGame();
 
 			if (!this.username) {
@@ -95,6 +101,8 @@ export const useGameStore = defineStore("game", {
 		},
 
 		submitGuess(guess: (string | number)[]) {
+			if (this.isSubmitting) return
+
 			const guessString = guess.join("");
 
 			if (guessString.length !== this.guessLength) {
@@ -108,12 +116,16 @@ export const useGameStore = defineStore("game", {
 				return;
 			}
 
+			this.error = null
+			this.isSubmitting = true
+
 			const { emit } = useSocket();
 			emit("guess", { guess: guessString });
 			console.log("Emitted guess to server:", guessString);
 		},
 
 		handleGuessResult(payload: GuessResultPayload) {
+			this.isSubmitting = false
 			this.totalGuesses++;
 			this.currentAttemptIndex++;
 			this.currentGuess = Array(this.guessLength).fill("");
@@ -194,10 +206,16 @@ export const useGameStore = defineStore("game", {
 		setError(message: string) {
 			this.error = message;
 			this.shakeActive = true;
+
+			// shake clears quickly
 			setTimeout(() => {
-				this.error = null;
 				this.shakeActive = false;
 			}, 400);
+
+			// error message stays visible for 3 seconds
+			setTimeout(() => {
+				this.error = null;
+			}, 3000);
 		},
 	},
 });

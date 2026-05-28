@@ -21,7 +21,7 @@
 			:guess="currentGuess"
 			:status="null"
 			:is-own="true"
-			:disabled="false"
+			:disabled="store.isSubmitting"
 			:shake="store.shakeActive"
 			@update:guess="store.setCurrentGuess"
 			@submit="(guess) => store.submitGuess(guess)"

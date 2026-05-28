@@ -34,6 +34,17 @@
 						{{ store.username }} <span class="text-text-muted">(you)</span>
 					</span>
 				</div>
+				<!-- ✅ Empty slots for missing players -->
+				<div
+					v-for="i in emptySlots"
+					:key="i"
+					class="w-full flex items-center gap-3 bg-white/10 rounded px-4 py-3 opacity-40"
+				>
+					<div class="w-2 h-2 rounded-full bg-white/30" />
+					<span class="text-white/50 text-sm italic"
+						>Waiting for player...</span
+					>
+				</div>
 			</div>
 
 			<p v-if="store.error" class="text-red-400 text-sm text-center">
@@ -51,7 +62,17 @@
 				<p class="text-white text-right w-full mb-4">
 					Guesses Left: {{ remainingGuesses }}
 				</p>
-				<GuessGrid class="w-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]" />
+
+				<!-- Error message -->
+				<Transition name="fade">
+					<p v-if="store.error" class="text-red-400 text-sm mb-3 text-center">
+						{{ store.error }}
+					</p>
+				</Transition>
+
+				<GuessGrid
+					class="w-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+				/>
 			</div>
 
 			<!-- Opponent Panel -->
@@ -153,17 +174,28 @@
 	);
 
 	const lastGuess = (username: string): string[] => {
-		const guesses = opponentLastGuesses.value[username] ?? []; 
+		const guesses = opponentLastGuesses.value[username] ?? [];
 		const last = guesses[guesses.length - 1];
 		return last ? last.split("") : [];
 	};
 
 	const opponentGuessCount = (username: string): number => {
-		return opponentLastGuesses.value[username]?.length ?? 0; 
+		return opponentLastGuesses.value[username]?.length ?? 0;
 	};
 
 	const leaveQueue = () => {
 		store.resetGame();
 		router.push({ name: "lobby" });
 	};
+
+	const modePlayerCount: Record<string, number> = {
+    easy: 2,
+    medium: 3,
+    hard: 4,
+};
+
+const emptySlots = computed(() => {
+    const total = modePlayerCount[store.currentMode] ?? 2;
+    return total - 1; // subtract yourself
+});
 </script>
