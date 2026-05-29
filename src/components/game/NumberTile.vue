@@ -71,7 +71,7 @@
 			inputRef.value.focus();
 		}
 
-		// ✅ Flip when tile mounts with a status (i.e. row was just submitted)
+		// Flip when tile mounts with a status (i.e. row was just submitted)
 		if (props.status && props.status !== "empty") {
 			flipClass.value = "animate-flip";
 		}
@@ -101,7 +101,7 @@
 
 		if (/^\d$/.test(lastChar)) {
 			emit("update:modelValue", Number(lastChar));
-			triggerPop(); // ✅ pop on valid digit
+			triggerPop(); // pop on valid digit
 			emit("next");
 		} else {
 			target.value = "";

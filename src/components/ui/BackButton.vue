@@ -1,6 +1,6 @@
 <template>
 	<button
-		@click="router.back()"
+		@click="router.push({name: 'home'})"
 		class="cursor-pointer text-btn-bg scale scale-100 hover:scale-101 active:scale-100 transition-transform duration-75 select-none font-black text-4xl"
 	>
 		<svg

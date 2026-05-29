@@ -26,7 +26,7 @@
 		status: CellStatus[] | null;
 		disabled?: boolean;
 		isOwn?: boolean;
-		shake?: boolean; // ✅ new
+		shake?: boolean; // new
 	}>();
 
 	const emit = defineEmits<{
@@ -37,7 +37,7 @@
 	const activeTileIndex = ref(0);
 	const shakeClass = ref("");
 
-	// ✅ Trigger shake when shake prop flips to true
+	// Trigger shake when shake prop flips to true
 	watch(
 		() => props.shake,
 		(val) => {

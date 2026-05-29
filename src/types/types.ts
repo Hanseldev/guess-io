@@ -9,7 +9,7 @@ export interface Player {
 export interface GuessResult {
 	guess: (string | number)[];
 	result: CellStatus[] | null;
-	isOwn: boolean
+	isOwn: boolean;
 }
 
 export interface MatchFoundPayload {
@@ -17,7 +17,7 @@ export interface MatchFoundPayload {
 	roomId: string;
 	digit: number;
 	tries: number;
-	players: {id: string; username: string}[];
+	players: { id: string; username: string }[];
 }
 
 export interface GuessResultPayload {
@@ -30,9 +30,15 @@ export interface GuessResultPayload {
 export interface GameOverPayload {
 	secret: string;
 	winner: string | null;
+	reason: string
 }
 
 export interface ErrorPayload {
 	success: boolean;
 	message: string;
+}
+
+export interface QueueUpdatePayload {
+	usernames: string[];
+	playersInQueue: number;
 }

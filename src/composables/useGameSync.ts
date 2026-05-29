@@ -5,6 +5,7 @@ import type {
 	GuessResultPayload,
 	GameOverPayload,
 	ErrorPayload,
+	QueueUpdatePayload,
 } from "@/types/types";
 
 export const useGameSync = () => {
@@ -46,6 +47,15 @@ export const useGameSync = () => {
 					? payload
 					: (payload?.message ?? "Unknown error");
 			store.setError(payload.message);
+		});
+
+		socket.on("queue_update", (payload: QueueUpdatePayload) => {
+			console.log("Queue update:", payload);
+			store.handleQueueUpdate(payload);
+		});
+
+		socket.on("queue_left", () => {
+			console.log("Left queue");
 		});
 	};
 

@@ -15,12 +15,14 @@ interface GameState {
 	opponents: Player[];
 	opponentLastGuesses: Record<string, string[]>;
 
-	// Game logic state
+	// Gamestate
 	guesses: GuessResult[];
 	currentGuess: (string | number)[];
 	currentAttemptIndex: number;
 	totalGuesses: number;
-	currentMode: "easy" | "medium" | "hard" | ""
+	currentMode: "easy" | "medium" | "hard" | "";
+	queuePlayers: string[];
+	wasDisconnect: boolean;
 
 	// Status
 	isWinner: boolean;
@@ -48,6 +50,8 @@ export const useGameStore = defineStore("game", {
 		currentAttemptIndex: 0,
 		secret: "",
 		currentMode: "",
+		queuePlayers: [],
+		wasDisconnect: false,
 
 		isWinner: false,
 		isGameOver: false,
@@ -82,13 +86,15 @@ export const useGameStore = defineStore("game", {
 			this.isWinner = false;
 			this.isActive = false;
 			this.isSubmitting = false;
+			this.wasDisconnect = false;
 			this.secret = "";
+			this.queuePlayers = [];
 			this.error = null;
 			this.shakeActive = false;
 		},
 
 		joinQueue(mode: "easy" | "medium" | "hard") {
-			this.currentMode = mode
+			this.currentMode = mode;
 			this.resetGame();
 
 			if (!this.username) {
@@ -101,7 +107,7 @@ export const useGameStore = defineStore("game", {
 		},
 
 		submitGuess(guess: (string | number)[]) {
-			if (this.isSubmitting) return
+			if (this.isSubmitting) return;
 
 			const guessString = guess.join("");
 
@@ -116,8 +122,8 @@ export const useGameStore = defineStore("game", {
 				return;
 			}
 
-			this.error = null
-			this.isSubmitting = true
+			this.error = null;
+			this.isSubmitting = true;
 
 			const { emit } = useSocket();
 			emit("guess", { guess: guessString });
@@ -125,7 +131,7 @@ export const useGameStore = defineStore("game", {
 		},
 
 		handleGuessResult(payload: GuessResultPayload) {
-			this.isSubmitting = false
+			this.isSubmitting = false;
 			this.totalGuesses++;
 			this.currentAttemptIndex++;
 			this.currentGuess = Array(this.guessLength).fill("");
@@ -178,22 +184,25 @@ export const useGameStore = defineStore("game", {
 
 			this.guesses.push({
 				guess: payload.guess.split(""),
-				result: null, // no color data
-				isOwn: false, // opponent guess
+				result: null,
+				isOwn: false,
 			});
 
-			this.opponents.forEach((opponent) => {
-				const current = this.opponentLastGuesses[opponent.name] ?? [];
+			// Only update the specific opponent who guessed
+			if (payload.username) {
+				const current = this.opponentLastGuesses[payload.username] ?? [];
 				this.opponentLastGuesses = {
 					...this.opponentLastGuesses,
-					[opponent.name]: [...current, payload.guess],
+					[payload.username]: [...current, payload.guess],
 				};
-				opponent.progress = [...opponent.progress, "empty"];
-			});
-			console.log(
-				"opponentLastGuesses after:",
-				JSON.stringify(this.opponentLastGuesses),
-			);
+
+				const opponent = this.opponents.find(
+					(o) => o.name === payload.username,
+				);
+				if (opponent) {
+					opponent.progress = [...opponent.progress, "empty"];
+				}
+			}
 		},
 
 		handleGameOver(payload: GameOverPayload) {
@@ -201,6 +210,14 @@ export const useGameStore = defineStore("game", {
 			this.isGameOver = true;
 			this.secret = payload.secret;
 			this.isWinner = payload.winner === this.username;
+			this.wasDisconnect = payload.reason === "Player Left";
+
+			console.log("🎮 Game over:", {
+				reason: payload.reason,
+				winner: payload.winner,
+				isWinner: this.isWinner,
+				wasDisconnect: this.wasDisconnect,
+			});
 		},
 
 		setError(message: string) {
@@ -216,6 +233,13 @@ export const useGameStore = defineStore("game", {
 			setTimeout(() => {
 				this.error = null;
 			}, 3000);
+		},
+
+		handleQueueUpdate(payload: {
+			usernames: string[];
+			playersInQueue: number;
+		}) {
+			this.queuePlayers = payload.usernames.filter((u) => u !== this.username);
 		},
 	},
 });

@@ -1,6 +1,6 @@
 <template>
 	<div class="flex flex-col min-h-screen">
-		<!-- WAITING ROOM -->
+		<!-- Waiting room -->
 		<div
 			v-if="!store.isActive && !store.isGameOver"
 			class="flex flex-col items-center justify-center flex-1 gap-8 p-8"
@@ -34,10 +34,20 @@
 						{{ store.username }} <span class="text-text-muted">(you)</span>
 					</span>
 				</div>
-				<!-- ✅ Empty slots for missing players -->
+				<!-- Real players from queuepdate -->
+				<div
+					v-for="player in store.queuePlayers"
+					:key="player"
+					class="w-full flex items-center gap-3 bg-white/10 rounded px-4 py-3"
+				>
+					<div class="w-2 h-2 rounded-full bg-green-400" />
+					<span class="text-white text-sm">{{ player }}</span>
+				</div>
+
+				<!-- Empty slots for remaining spots -->
 				<div
 					v-for="i in emptySlots"
-					:key="i"
+					:key="`empty-${i}`"
 					class="w-full flex items-center gap-3 bg-white/10 rounded px-4 py-3 opacity-40"
 				>
 					<div class="w-2 h-2 rounded-full bg-white/30" />
@@ -76,14 +86,12 @@
 			</div>
 
 			<!-- Opponent Panel -->
+			<p class="text-text-muted text-xs uppercase tracking-widest self-center">
+				Opponents
+			</p>
 			<div
 				class="flex flex-row lg:flex-col gap-3 lg:w-56 overflow-x-auto lg:overflow-x-visible"
 			>
-				<p
-					class="text-text-muted text-xs uppercase tracking-widest shrink-0 self-center lg:self-auto"
-				>
-					Opponents
-				</p>
 				<div
 					v-for="opponent in opponents"
 					:key="opponent.id"
@@ -118,9 +126,24 @@
 		<!-- GAME OVER MODAL -->
 		<BaseModal :model-value="store.isGameOver" :closeable="false">
 			<div class="flex flex-col items-center gap-4 text-center">
-				<p class="text-3xl font-bold">
-					{{ store.isWinner ? "You Win!" : "You Lose!" }}
-				</p>
+				<!-- Disconnect case -->
+				<template v-if="store.wasDisconnect && store.isWinner">
+					<p class="text-3xl font-bold">🏆 You Win!</p>
+					<p class="text-black/70 text-sm">An opponent disconnected</p>
+				</template>
+
+				<template v-else-if="store.wasDisconnect && !store.isWinner">
+					<p class="text-3xl font-bold">📡 Disconnected</p>
+					<p class="text-black/70 text-sm">A player left the game</p>
+				</template>
+
+				<!-- Normal case -->
+				<template v-else>
+					<p class="text-3xl font-bold">
+						{{ store.isWinner ? "🎉 You Win!" : "😞 You Lose!" }}
+					</p>
+				</template>
+
 				<p class="text-white/70 text-sm">The secret number was</p>
 				<p class="text-4xl font-mono font-bold tracking-widest">
 					{{ store.secret }}
@@ -134,10 +157,11 @@
 </template>
 
 <script setup lang="ts">
-	import { computed, watch, ref } from "vue";
+	import { computed, watch, ref, onMounted } from "vue";
 	import { useRouter } from "vue-router";
 	import { storeToRefs } from "pinia";
 	import { useGameStore } from "@/stores/gameStore";
+	import { useSocket } from "@/composables/useSocket";
 	import GuessGrid from "@/components/game/GuessGrid.vue";
 	import BaseModal from "@/components/ui/BaseModal.vue";
 	import BaseButton from "@/components/ui/BaseButton.vue";
@@ -184,18 +208,21 @@
 	};
 
 	const leaveQueue = () => {
+		const { emit } = useSocket();
+		emit("leave_queue", {}); // ✅ tell server to remove us from queue
 		store.resetGame();
 		router.push({ name: "lobby" });
 	};
 
 	const modePlayerCount: Record<string, number> = {
-    easy: 2,
-    medium: 3,
-    hard: 4,
-};
+		easy: 2,
+		medium: 3,
+		hard: 4,
+	};
 
-const emptySlots = computed(() => {
-    const total = modePlayerCount[store.currentMode] ?? 2;
-    return total - 1; // subtract yourself
-});
+	const emptySlots = computed(() => {
+		const total = modePlayerCount[store.currentMode] ?? 2;
+		// subtract yourself and any real players already shown
+		return Math.max(0, total - 1 - store.queuePlayers.length);
+	});
 </script>

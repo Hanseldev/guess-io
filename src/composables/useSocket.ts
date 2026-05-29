@@ -1,3 +1,5 @@
+import { useGameStore } from "@/stores/gameStore";
+
 let socketInstance: WebSocket | null = null;
 let messageHandlers: Record<string, ((data: any) => void)[]> = {};
 let listenersInitialized = false; // guard
@@ -13,6 +15,14 @@ export const useSocket = () => {
 
 		socketInstance.onclose = (event) => {
 			console.warn("Disconnected:", event.code, event.reason);
+
+			// If game was active when connection dropped, redirect home
+			const store = useGameStore();
+			if (store.isActive) {
+				store.resetGame();
+				// Can't use vue-router here, use window directly
+				window.location.href = "/";
+			}
 		};
 
 		socketInstance.onerror = (err) => {
