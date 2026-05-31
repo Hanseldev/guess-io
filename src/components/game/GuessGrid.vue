@@ -16,7 +16,7 @@
 		<!-- Active input row — only show if game isn't over -->
 		<GuessRow
 			v-if="!store.isGameOver"
-			:key="`active-${currentAttemptIndex}`"
+			:key="`active-${ownGuessCount}`"
 			:code-length="guessLength"
 			:guess="currentGuess"
 			:status="null"
@@ -57,6 +57,11 @@
 		guessLength,
 		guessAttempts,
 	} = storeToRefs(store);
+
+	// Only counts your guesses — opponent guesses don't change this
+	const ownGuessCount = computed(
+		() => guesses.value.filter((g) => g.isOwn).length,
+	);
 
 	const emptyRows = computed(() => {
 		const used = guesses.value.length + (store.isGameOver ? 0 : 1);

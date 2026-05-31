@@ -23,6 +23,7 @@ interface GameState {
 	currentMode: "easy" | "medium" | "hard" | "";
 	queuePlayers: string[];
 	wasDisconnect: boolean;
+	joinedQueue: boolean;
 
 	// Status
 	isWinner: boolean;
@@ -52,6 +53,7 @@ export const useGameStore = defineStore("game", {
 		currentMode: "",
 		queuePlayers: [],
 		wasDisconnect: false,
+		joinedQueue: false,
 
 		isWinner: false,
 		isGameOver: false,
@@ -96,6 +98,7 @@ export const useGameStore = defineStore("game", {
 		joinQueue(mode: "easy" | "medium" | "hard") {
 			this.currentMode = mode;
 			this.resetGame();
+			this.joinedQueue = true
 
 			if (!this.username) {
 				this.username = "Player";

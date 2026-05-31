@@ -225,4 +225,10 @@
 		// subtract yourself and any real players already shown
 		return Math.max(0, total - 1 - store.queuePlayers.length);
 	});
+
+	onMounted(() => {
+    if (!store.currentMode || !store.joinedQueue) {
+        router.push({ name: "home" });
+    }
+});
 </script>
